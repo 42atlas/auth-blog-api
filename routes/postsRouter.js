@@ -8,6 +8,6 @@ const postsRouter = Router();
 
 postsRouter.route('/').get(getAllPosts).post(verifyToken, validateJOI(post), createPost);
 
-postsRouter.route('/:id').get(getSinglePost).put(validateJOI(post), updatePost).delete(deletePost);
+postsRouter.route('/:id').get(getSinglePost).put(verifyToken, validateJOI(post), updatePost).delete(verifyToken, deletePost);
 
 export default postsRouter;

@@ -3,13 +3,17 @@ import ErrorResponse from '../utils/ErrorResponse.js';
 import Post from '../models/Post.js';
 
 export const getAllPosts = asyncHandler(async (req, res, next) => {
-  const posts = await Post.find();
+  const posts = await Post.find().populate('author');
   res.json(posts);
 });
 
 export const createPost = asyncHandler(async (req, res) => {
-  const { body, user: author } = req;
-  const newPost = await Post.create({ ...body, author });
+  const {
+    body,
+    user: { _id: author }
+  } = req;
+  let newPost = await Post.create({ ...body, author });
+  newPost = await newPost.populate('author');
   res.status(201).json(newPost);
 });
 
@@ -25,18 +29,25 @@ export const getSinglePost = asyncHandler(async (req, res) => {
 export const updatePost = asyncHandler(async (req, res) => {
   const {
     body,
-    params: { id }
+    params: { id },
+    user: { _id: userId }
   } = req;
+  const found = await Post.findById(id);
+  if (!found) throw new ErrorResponse(`Post with id of ${id} doesn't exist`, 404);
+  if (found.author.toString() !== userId.toString()) throw new ErrorResponse(`Only the owner of the post can edit`, 403);
   const updatedPost = await Post.findOneAndUpdate({ _id: id }, body, { new: true });
-  if (!updatedPost) throw new ErrorResponse(`Post with id of ${id} doesn't exist`, 404);
   res.json(updatedPost);
 });
 
 export const deletePost = asyncHandler(async (req, res) => {
   const {
-    params: { id }
+    params: { id },
+    user: { _id: userId }
   } = req;
-  const deleted = await Post.findByIdAndDelete(id);
-  if (!deleted) throw new ErrorResponse(`Post with id of ${id} doesn't exist`, 404);
+  const found = await Post.findById(id);
+  if (!found) throw new ErrorResponse(`Post with id of ${id} doesn't exist`, 404);
+  if (found.author.toString() !== userId.toString()) throw new ErrorResponse(`Only the owner of the post can delete`, 403);
+  found.des;
+  await Post.deleteOne({ _id: id });
   res.json({ success: `Post with id of ${id} was deleted` });
 });
