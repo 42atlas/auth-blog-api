@@ -9,7 +9,7 @@ import errorHandler from './middlewares/errorHandler.js';
 const app = express();
 const port = process.env.PORT || 5000;
 
-process.env.NODE_ENV !== 'production' && app.use(morgan('dev'));
+process.env.NODE_ENV !== 'production' && app.use(morgan('tiny'));
 
 app.use(express.json());
 //app.use('/session-auth', sessionAuth);
