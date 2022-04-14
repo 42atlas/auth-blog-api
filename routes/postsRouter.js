@@ -6,7 +6,7 @@ import { post } from '../joi/schemas.js';
 
 const postsRouter = Router();
 
-postsRouter.route('/').get(getAllPosts).post(verifyToken, validateJOI(post), createPost);
+postsRouter.route('/').get(getAllPosts).post(validateJOI(post), createPost);
 
 postsRouter.route('/:id').get(getSinglePost).put(verifyToken, validateJOI(post), updatePost).delete(verifyToken, deletePost);
 

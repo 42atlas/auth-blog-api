@@ -1,5 +1,6 @@
 import './db/index.js';
 import express from 'express';
+import cors from 'cors';
 import morgan from 'morgan';
 import postsRouter from './routes/postsRouter.js';
 import authRouter from './routes/authRouter.js';
@@ -9,8 +10,9 @@ import errorHandler from './middlewares/errorHandler.js';
 const app = express();
 const port = process.env.PORT || 5000;
 
-process.env.NODE_ENV !== 'production' && app.use(morgan('tiny'));
+process.env.NODE_ENV !== 'production' && app.use(morgan('dev'));
 
+app.use(cors({ origin: '*' }));
 app.use(express.json());
 //app.use('/session-auth', sessionAuth);
 app.use('/auth', authRouter);
