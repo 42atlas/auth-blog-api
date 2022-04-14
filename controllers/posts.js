@@ -9,10 +9,10 @@ export const getAllPosts = asyncHandler(async (req, res, next) => {
 
 export const createPost = asyncHandler(async (req, res) => {
   const {
-    body
-    // user: { _id: author }
+    body,
+    user: { _id: author }
   } = req;
-  let newPost = await Post.create({ ...body, author: '62558b0f9a66adb1ef38c355' });
+  let newPost = await Post.create({ ...body, author });
   newPost = await newPost.populate('author');
   res.status(201).json(newPost);
 });
